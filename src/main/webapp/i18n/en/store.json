@@ -1,0 +1,5 @@
+{
+  "storeManagement": {
+    "created": "A new store is register with identifier {{ param }}. Now our awesome content team will verify it."
+  }
+}
