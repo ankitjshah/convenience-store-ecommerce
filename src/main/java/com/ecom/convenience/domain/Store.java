@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "store")
@@ -24,8 +25,8 @@ public class Store extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(unique = true, name = "id", nullable = false)
+    private String id = UUID.randomUUID().toString().toUpperCase();;
 
     @NotNull
     @Column(name = "store_name", length = 60, nullable = false)
@@ -106,8 +107,8 @@ public class Store extends AbstractAuditingEntity implements Serializable {
     @Column(name = "image_url", length = 256)
     private String imageUrl;
 
-    @Column(name = "opt_code")
-    private String optCode;
+    @Column(name = "otp_code")
+    private String otpCode;
 
     @JsonIgnore
     @ManyToMany
@@ -124,11 +125,11 @@ public class Store extends AbstractAuditingEntity implements Serializable {
         return serialVersionUID;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -284,11 +285,11 @@ public class Store extends AbstractAuditingEntity implements Serializable {
         this.closeTime = closeTime;
     }
 
-    public String getOptCode() {
-        return optCode;
+    public String getOtpCode() {
+        return otpCode;
     }
 
-    public void setOptCode(String optCode) {
-        this.optCode = optCode;
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
     }
 }

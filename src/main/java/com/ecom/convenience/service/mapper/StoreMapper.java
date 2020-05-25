@@ -1,7 +1,6 @@
 package com.ecom.convenience.service.mapper;
 
 import com.ecom.convenience.config.Constants;
-import com.ecom.convenience.domain.Authority;
 import com.ecom.convenience.domain.Role;
 import com.ecom.convenience.domain.Store;
 import com.ecom.convenience.service.dto.StoreDTO;
@@ -52,7 +51,7 @@ public class StoreMapper {
             } else {
                 store.setLangKey(storeDto.getLangKey());
             }
-            store.setOptCode(storeDto.getOptCode());
+            store.setOtpCode(storeDto.getOtpCode());
             Set<Role> roles = this.roleFromStrings(storeDto.getRole());
             store.setRole(roles);
             return store;

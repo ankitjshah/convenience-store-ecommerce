@@ -3,19 +3,18 @@ package com.ecom.convenience.service.dto;
 import com.ecom.convenience.config.Constants;
 import com.ecom.convenience.domain.Role;
 import com.ecom.convenience.domain.Store;
-import org.springframework.format.annotation.NumberFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.sql.Time;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StoreDTO {
-    private Long id;
+    private String id;
 
     @NotBlank
     @Pattern(regexp = Constants.LOGIN_REGEX)
@@ -86,7 +85,7 @@ public class StoreDTO {
 
     private Set<String> role;
 
-    private String optCode;
+    private String otpCode;
 
     public StoreDTO() {
         // Empty constructor needed for Jackson.
@@ -116,23 +115,23 @@ public class StoreDTO {
         this.createdDate = store.getCreatedDate();
         this.lastModifiedBy = store.getLastModifiedBy();
         this.lastModifiedDate = store.getLastModifiedDate();
-        this.optCode = store.getOptCode();
+        this.otpCode = store.getOtpCode();
          this.role = store.getRole().stream().map(Role::getName).collect(Collectors.toSet());
     }
 
-    public String getOptCode() {
-        return optCode;
+    public String getOtpCode() {
+        return otpCode;
     }
 
-    public void setOptCode(String optCode) {
-        this.optCode = optCode;
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,6 +1,8 @@
 package com.ecom.convenience.security;
 
+import com.ecom.convenience.domain.Store;
 import com.ecom.convenience.domain.User;
+import com.ecom.convenience.repository.StoreRepository;
 import com.ecom.convenience.repository.UserRepository;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,39 +25,59 @@ public class DomainUserDetailsService implements UserDetailsService {
     private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.class);
 
     private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
 
-    public DomainUserDetailsService(UserRepository userRepository) {
+    public DomainUserDetailsService(UserRepository userRepository,
+                                    StoreRepository storeRepository) {
         this.userRepository = userRepository;
+        this.storeRepository = storeRepository;
     }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
+        // This is user loging repository call
+//        if (new EmailValidator().isValid(login, null)) {
+//            return userRepository
+//                .findOneWithAuthoritiesByEmailIgnoreCase(login)
+//                .map(user -> createSpringSecurityUser(login, user))
+//                .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " was not found in the database"));
+//        }
 
-        if (new EmailValidator().isValid(login, null)) {
-            return userRepository
-                .findOneWithAuthoritiesByEmailIgnoreCase(login)
-                .map(user -> createSpringSecurityUser(login, user))
-                .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " was not found in the database"));
-        }
-
+//        return userRepository
+//            .findOneWithAuthoritiesByLogin(lowercaseLogin)
+//            .map(user -> createSpringSecurityUser(lowercaseLogin, user))
+//            .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        return userRepository
-            .findOneWithAuthoritiesByLogin(lowercaseLogin)
+        return storeRepository
+            .findOneWithAuthoritiesByPhoneNumber(lowercaseLogin)
             .map(user -> createSpringSecurityUser(lowercaseLogin, user))
             .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
+
     }
 
-    private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {
-        if (!user.getActivated()) {
-            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
+//    private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {
+//        if (!user.getActivated()) {
+//            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
+//        }
+//        List<GrantedAuthority> grantedAuthorities = user
+//            .getAuthorities()
+//            .stream()
+//            .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+//            .collect(Collectors.toList());
+//        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), grantedAuthorities);
+//    }
+
+    private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, Store user) {
+        if (!user.isActivated()) {
+            throw new UserNotActivatedException("Store User " + lowercaseLogin + " was not activated");
         }
         List<GrantedAuthority> grantedAuthorities = user
-            .getAuthorities()
+            .getRole()
             .stream()
             .map(authority -> new SimpleGrantedAuthority(authority.getName()))
             .collect(Collectors.toList());
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(user.getPhoneNumber(), user.getPassword(), grantedAuthorities);
     }
 }
